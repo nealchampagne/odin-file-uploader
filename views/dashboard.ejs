@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h2><%= currentFolder.name %></h2>
+
+  <h3>Folders</h3>
+  <ul>
+    <% folders.forEach(folder => { %>
+      <li><a href="/folders/<%= folder.id %>"><%= folder.name %></a></li>
+    <% }) %>
+  </ul>
+
+  <h3>Files</h3>
+  <ul>
+    <% files.forEach(file => { %>
+      <%- include('partials/fileCard', { file }) %>
+    <% }) %>
+  </ul>
+</body>
+</html>

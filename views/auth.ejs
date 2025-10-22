@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOP File Uploader - Log In</title>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="auth-container">
+    <h2>Login</h2>
+    <form action="/login" method="POST">
+      <label for="email">Email:</label>
+      <input type="email" name="email" required />
+
+      <label for="password">Password:</label>
+      <input type="password" name="password" required />
+
+      <button type="submit">Log In</button>
+    </form>
+
+    <div class="signup-redirect">
+      <p>Don't have an account?</p>
+      <form action="/signup" method="GET">
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>
