@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const controller = require('../controllers/fileController.js');
+const upload = require('../upload.js');
+const { sessionAuth } = require('../middleware/sessionAuth.js');
 
-router.post('/upload', upload.single('file'), controller.uploadFile);
+router.post('/upload', sessionAuth, upload.single('file'), controller.uploadFile);
 
-router.get('/:id', controller.getFileById);
+router.get('/:id', sessionAuth, controller.getFileById);
 
-router.get('/:id/download', controller.downloadFile);
+router.get('/:id/download', sessionAuth, controller.downloadFile);
 
 module.exports = router;
