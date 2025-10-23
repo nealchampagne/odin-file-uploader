@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= folderName === 'Root' ? 'Home' : folderName %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <%- include('partials/_header') %>
+  <% if (folderName !== 'Root') { %>
+    <nav class="breadcrumbs">
+      <% if (breadcrumbs.length <= 4) { %>
+        <% breadcrumbs.forEach((crumb, index) => { %>
+          <a href="<%= crumb.id ? '/folders/' + crumb.id : '/folders' %>"><%= crumb.name %></a>
+          <% if (index < breadcrumbs.length - 1) { %>&gt;<% } %>
+        <% }) %>
+      <% } else { %>
+        <a href="<%= breadcrumbs[0].id ? '/folders/' + breadcrumbs[0].id : '/folders' %>"><%= breadcrumbs[0].name %></a>
+        &gt; ...
+        &gt; <a href="/folders/<%= breadcrumbs[breadcrumbs.length - 2].id %>"><%= breadcrumbs[breadcrumbs.length - 2].name %></a>
+        &gt; <a href="/folders/<%= breadcrumbs[breadcrumbs.length - 1].id %>"><%= breadcrumbs[breadcrumbs.length - 1].name %></a>
+      <% } %>
+    </nav>
+  <% } %>
+  
+  <div id="uploadForm" style="display:none;">
+    <form action="/files/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+
+      <label for="folderSelect">Upload to:</label>
+      <select name="folderId" id="folderSelect">
+        <% folderPaths.forEach(folder => { %>
+          <option value="<%= folder.id %>" <%= folder.id === folderId ? 'selected' : '' %>>
+            <%= folder.path %>
+          </option>
+        <% }) %>
+      </select>
+
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+
+  <!-- Hidden forms -->
+  <div id="newFolderForm" style="display:none;">
+    <form action="/folders/create" method="POST">
+      <input type="hidden" name="parentId" value="<%= folderId %>" />
+      <input type="text" name="name" placeholder="Folder name" required />
+      <button type="submit">Create</button>
+    </form>
+  </div>
+
+  <div id="uploadForm" style="display:none;">
+    <form action="/files/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+      <select name="folderId">
+        <% folderPaths.forEach(folder => { %>
+          <option value="<%= folder.id %>" <%= folder.id === folderId ? 'selected' : '' %>>
+            <%= folder.path %>
+          </option>
+        <% }) %>
+      </select>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+
+  <h2><%= folderName === 'Root' ? 'Home' : folderName %></h2>
+
+  <h3>Subfolders</h3>
+  <ul>
+    <% subfolders.forEach(sub => { %>
+      <li class="folder">
+        <a href="/folders/<%= sub.id %>">📁 <%= sub.name %></a>
+      </li>
+    <% }) %>
+  </ul>
+
+  <h3>Files</h3>
+  <ul>
+    <% files.forEach(file => { %>
+      <li class="file">📄 <%= file.name %></li>
+    <% }) %>
+  </ul>
+
+  <div class="fab-container">
+    <button class="fab-button">+</button>
+    <div class="fab-menu">
+      <form action="/folders/create" method="POST" style="margin:0;">
+        <input type="hidden" name="parentId" value="<%= folderId %>" />
+        <button type="submit" style="all: unset; cursor: pointer;">📁 New Folder</button>
+      </form>
+      <a href="#" onclick="showUploadForm()">📤 Upload File</a>
+    </div>
+  </div>
+
+  <%- include('partials/_footer') %>
+  <script src="/js/fab.js" defer></script>
+</body>
+</html>
