@@ -20,41 +20,36 @@ const downloadFile = async (req, res) => {
 };
 
 const uploadFile = async (req, res) => {
+  const userId = req.user.id;
+  const { folderId } = req.body;
+  const file = req.file;
 
-  const { file, title, folderId } = req.body;
-  const targetFolderId = folderId || req.session.user.rootFolderId;
-
-  const folder = await prisma.folder.findUnique({
-    where: { id: targetFolderId },
-  });
-
-  if (!folder || folder.ownerId !== req.session.user.id) {
-    return res.status(403).json({ error: 'Invalid folder selection' });
+  if (!folderId || !file) {
+    return res.status(400).send("Missing folder or file");
   }
 
-  if (!file) return res.status(400).json({ error: 'No file uploaded' });
+  // Optional: validate folder ownership
+  const folder = await prisma.folder.findUnique({ where: { id: folderId } });
+  if (!folder || folder.ownerId !== userId) {
+    return res.status(403).send("Invalid folder");
+  }
+
+  console.log(`Uploading ${file.originalname} (${file.size} bytes) to folder ${req.body.folderId}`);
 
   await prisma.file.create({
     data: {
-      name: title || file.originalname,
+      name: file.originalname,
+      ownerId: userId,
+      folderId,
       size: file.size,
       mimeType: file.mimetype,
       url: file.path,
-      folderId: targetFolderId,
-      ownerId: req.session.user.id,
-    },
+      // Add metadata if needed
+    }
   });
 
-  console.log(`User ${req.session.user.email} uploaded ${file.originalname} to folder ${targetFolderId}`);
-
-  res.json({
-    name: title || file.originalname,
-    size: file.size,
-    mimeType: file.mimetype,
-    folderId: targetFolderId,
-    uploadedAt: new Date(),
-  });
-}
+  res.redirect(`/folders/${folderId}`);
+};
 
 module.exports = {
   getFileById,
