@@ -1,24 +1,51 @@
 const express = require('express');
 const session = require('express-session');
+const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
+const prisma = require('./lib/prisma.js');
 const passport = require('passport');
 require('./auth.js');
 const path = require('node:path');
+require('dotenv').config();
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({}));
+app.use(session({
+  store: new PrismaSessionStore(prisma, {
+    checkPeriod: 2 * 60 * 1000, // prune expired sessions every 2 minutes
+  }),
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    secure: false, // true in production with HTTPS
+    httpOnly: true,
+  }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log('Session:', req.session);
+  next();
+});
 
 // Routes
 app.use('/folders', require('./routes/folders.js'));
 app.use('/files', require('./routes/files.js'));
 app.use('/share', require('./routes/share.js'));
-app.use('/', require('./routes/dashboard.js'));
+app.use('/', require('./routes/auth.js'));
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
