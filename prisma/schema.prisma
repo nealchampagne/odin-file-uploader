@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,16 +19,15 @@ model User {
   password  String
   files     File[]
   folders   Folder[]
-  sessions  Session[]
 }
 
 model Session {
-  id            String    @id @default(uuid())
-  userId        String
-  expiresAt     DateTime
-  sessionToken  String    @unique
-  user          User      @relation(fields: [userId], references: [id])
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }
+
 
 model Folder {
   id            String        @id @default(uuid())
