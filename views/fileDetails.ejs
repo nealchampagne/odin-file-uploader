@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Details: <%= file.name %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <%- include('partials/_header') %>
+  <div class="container">
+    <h2>File Details</h2>
+    <ul class="file-details">
+      <li><strong>Name:</strong> <%= file.name %></li>
+      <li><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</li>
+      <li><strong>Type:</strong> <%= file.mimeType %></li>
+      <li><strong>Uploaded:</strong> <%= file.createdAt.toLocaleString() %></li>
+      <li><strong>Owner:</strong> <%= file.user.email %></li>
+      <li><strong>Folder:</strong> <a href="/folders/<%= file.folderId %>"><%= file.folder.name %></a></li>
+      <li><strong>Download:</strong> <a href="<%= file.url %>" target="_blank">Open file</a></li>
+    </ul>
+    <a href="/folders/<%= file.folderId %>" class="btn">← Back to Folder</a>
+  </div>
+  <%- include('partials/_footer') %>
+</body>
+</html>
