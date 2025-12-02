@@ -1,15 +1,9 @@
-<header class="site-header">
-  <div class="container">
-    <div class="logo">
-      <a href="/folders"><h1>🗂️ Odin File Uploader</h1></a>
-    </div>
-
-    <nav class="nav-links">
-      <% if (user) { %>
-        <span class="welcome">Welcome, <%= user.name %></span>
-        <a href="/folders">Home</a>
-        <a href="/logout" class="logout-button">Log Out</a>
-      <% } %>
-    </nav>
+<header class="header">
+  <div class="logo">
+    <h1>Odin File Uploader</h1>
   </div>
+  <nav class="nav-links">
+    <a href="/folders">Home</a>
+    <a href="/logout" class="logout-button">Logout</a>
+  </nav>
 </header>
