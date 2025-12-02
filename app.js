@@ -5,6 +5,7 @@ const prisma = require('./lib/prisma.js');
 const supabase = require('./lib/supabase.js');
 const passport = require('passport');
 require('./auth.js');
+const fs = require('node:fs');
 const path = require('node:path');
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
