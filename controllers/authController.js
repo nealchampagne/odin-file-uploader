@@ -20,7 +20,9 @@ const postLogin = async (req, res, next) => {
     if (!user) {
       return res.render('auth', {
         error: info.message,
-        email: req.body.email
+        email: req.body.email,
+        expired: req.query?.expired || false,
+        logout: req.query?.logout || false
       });
     }
 
