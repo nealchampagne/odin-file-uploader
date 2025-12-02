@@ -5,7 +5,10 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js",
+    "build": "npm install && prisma generate && prisma migrate deploy",
+    "postinstall": "prisma generate",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
