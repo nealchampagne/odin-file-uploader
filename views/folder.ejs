@@ -1,97 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= folderName === 'Root' ? 'Home' : folderName %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Uploader: <%= folderName === 'Root' ? 'Home' : folderName %></title>
   <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
   <%- include('partials/_header') %>
-  <% if (folderName !== 'Root') { %>
-    <nav class="breadcrumbs">
-      <% if (breadcrumbs.length <= 4) { %>
+  <div class="container">
+    <% if (folderName !== 'Root' && (breadcrumbs && breadcrumbs.length > 0)) { %>
+      <nav class="breadcrumbs">
         <% breadcrumbs.forEach((crumb, index) => { %>
-          <a href="<%= crumb.id ? '/folders/' + crumb.id : '/folders' %>"><%= crumb.name %></a>
+          <a data-id="<%= crumb.id %>" href="<%= sharedContext ? '/share/' + crumb.id : '/folders/' + crumb.id %>"><%= crumb.name %></a>
           <% if (index < breadcrumbs.length - 1) { %>&gt;<% } %>
         <% }) %>
-      <% } else { %>
-        <a href="<%= breadcrumbs[0].id ? '/folders/' + breadcrumbs[0].id : '/folders' %>"><%= breadcrumbs[0].name %></a>
-        &gt; ...
-        &gt; <a href="/folders/<%= breadcrumbs[breadcrumbs.length - 2].id %>"><%= breadcrumbs[breadcrumbs.length - 2].name %></a>
-        &gt; <a href="/folders/<%= breadcrumbs[breadcrumbs.length - 1].id %>"><%= breadcrumbs[breadcrumbs.length - 1].name %></a>
-      <% } %>
-    </nav>
-  <% } %>
-  
-  <div id="uploadForm" style="display:none;">
-    <form action="/files/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" required />
+      </nav>
+    <% } %>
 
-      <label for="folderSelect">Upload to:</label>
-      <select name="folderId" id="folderSelect">
-        <% folderPaths.forEach(folder => { %>
-          <option value="<%= folder.id %>" <%= folder.id === folderId ? 'selected' : '' %>>
-            <%= folder.path %>
-          </option>
-        <% }) %>
-      </select>
+    <% if (sharedContext) { %>
+      <div class="shared-banner">
+        Shared folder — expires <%= new Date(expiresAt).toLocaleDateString() %>
+      </div>
+    <% } %>
 
-      <button type="submit">Upload</button>
-    </form>
-  </div>
+    <h2><%= folderName === 'Root' ? 'Home' : folderName %></h2>
 
-  <!-- Hidden forms -->
-  <div id="newFolderForm" style="display:none;">
-    <form action="/folders/create" method="POST">
-      <input type="hidden" name="parentId" value="<%= folderId %>" />
-      <input type="text" name="name" placeholder="Folder name" required />
-      <button type="submit">Create</button>
-    </form>
-  </div>
+    <h3>Folders</h3>
+    <ul id="folder-list" class="grid">
+      <% subfolders.forEach(folder => { %>
+        <li class="folder card" data-id="<%= folder.id %>" data-type="folder"
+            <%= sharedContext ? '' : 'ondragover="event.preventDefault()" ondrop="handleDrop(event)"' %>>
+          <a href="<%= sharedContext ? '/share/' + folder.id : '/folders/' + folder.id %>" class="card-link">
+            <div class="card-icon">📁</div>
+            <span class="item-name rename-target"
+                  <%= sharedContext ? '' : 'draggable=true' %>
+                  data-id="<%= folder.id %>" data-type="folder">
+              <%= folder.name %>
+            </span>
+          </a>
+          <% if (!sharedContext) { %>
+            <button class="kebab-menu" aria-label="More options" data-id="<%= folder.id %>" data-type="folder" tabindex="0">⋮</button>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
 
-  <div id="uploadForm" style="display:none;">
-    <form action="/files/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" required />
-      <select name="folderId">
-        <% folderPaths.forEach(folder => { %>
-          <option value="<%= folder.id %>" <%= folder.id === folderId ? 'selected' : '' %>>
-            <%= folder.path %>
-          </option>
-        <% }) %>
-      </select>
-      <button type="submit">Upload</button>
-    </form>
-  </div>
+    <h3>Files</h3>
+    <ul id="file-list" class="grid">
+      <% files.forEach(file => { %>
+        <li class="file card" data-id="<%= file.id %>" data-type="file">
+          <div class="card-icon">📄</div>
+          <span class="item-name rename-target"
+                <%= sharedContext ? '' : 'draggable=true' %>
+                data-id="<%= file.id %>" data-type="file">
+            <%= file.name %>
+          </span>
+          <% if (sharedContext) { %>
+            <a href="/files/<%= file.id %>/download" class="download-button" title="Download">
+              ⬇️
+            </a>
+          <% } else { %>
+            <button class="kebab-menu" aria-label="More options" data-id="<%= file.id %>" data-type="file" tabindex="0">⋮</button>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
 
-  <h2><%= folderName === 'Root' ? 'Home' : folderName %></h2>
+    <% if (!sharedContext) { %>
+      <!-- Hidden upload form -->
+      <div id="uploadForm" style="display:none;">
+        <form class="upload-form" action="/files/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file" required />
+          <input type="hidden" name="folderId" id="selectedFolderId" />
+          <input type="hidden" name="name" value="" />
+          <input type="hidden" name="ownerId" value="<%= user.id %>" />
+          <input type="hidden" name="size" value="" />
+          <input type="hidden" name="mimeType" value="" />
+          <input type="hidden" name="url" value="" />
+          <span>Upload to:</span>
+          <div id="folderTreeContainer" class="folder-tree-container"></div>
+          <button type="submit">Upload</button>
+          <button type="button" onclick="hideUploadForm()">Cancel</button>
+        </form>
+      </div>
 
-  <h3>Subfolders</h3>
-  <ul>
-    <% subfolders.forEach(sub => { %>
-      <li class="folder">
-        <a href="/folders/<%= sub.id %>">📁 <%= sub.name %></a>
-      </li>
-    <% }) %>
-  </ul>
-
-  <h3>Files</h3>
-  <ul>
-    <% files.forEach(file => { %>
-      <li class="file">📄 <%= file.name %></li>
-    <% }) %>
-  </ul>
-
-  <div class="fab-container">
-    <button class="fab-button">+</button>
-    <div class="fab-menu">
-      <form action="/folders/create" method="POST" style="margin:0;">
-        <input type="hidden" name="parentId" value="<%= folderId %>" />
-        <button type="submit" style="all: unset; cursor: pointer;">📁 New Folder</button>
-      </form>
-      <a href="#" onclick="showUploadForm()">📤 Upload File</a>
-    </div>
+      <!-- Floating Action Button -->
+      <div class="fab-container">
+        <button class="fab-button">+</button>
+        <div class="fab-menu">
+          <a href="#" onclick="createFolder('<%= folderId %>')">📁 New Folder</a>
+          <a href="#" onclick="showUploadForm()">📤 Upload File</a>
+        </div>
+      </div>
+    <% } %>
   </div>
 
   <%- include('partials/_footer') %>
+
+  <div id="shareModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>Share Folder</h3>
+      <p>This link gives read-only access to this folder and its contents:</p>
+      <input type="text" id="shareLink" readonly />
+      <p>Expires: <span id="shareExpires"></span></p>
+      <div class="modal-actions">
+        <button onclick="copyShareLink()">Copy Link</button>
+        <button onclick="closeShareModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/shareFolder.js" defer></script>
+  <script src="/js/uploadMetadata.js" defer></script>
   <script src="/js/fab.js" defer></script>
+  <script src="/js/renameItem.js" defer></script>
+  <script src="/js/createFolder.js" defer></script>
+  <script src="/js/moveItem.js" defer></script>
+  <script src="/js/deleteItem.js" defer></script>
+  <script src="/js/itemMenu.js" defer></script>
 </body>
 </html>
