@@ -2,11 +2,17 @@ const express = require('express');
 const session = require('express-session');
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const prisma = require('./lib/prisma.js');
+const supabase = require('./lib/supabase.js');
 const passport = require('passport');
 require('./auth.js');
 const path = require('node:path');
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
+const flash = require('connect-flash');
+
+// Ensure CA cert is available for secure DB connections
+const caCertPath = path.join(__dirname, 'temp-ca.pem');
+fs.writeFileSync(caCertPath, process.env.CA_CERT);
 
 const app = express();
 app.use(express.json());
@@ -24,9 +30,16 @@ app.use(session({
     httpOnly: true,
   }
 }));
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
