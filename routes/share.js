@@ -3,7 +3,7 @@ const router = express.Router();
 const controller = require('../controllers/shareController.js');
 const { sessionAuth } = require('../middleware/sessionAuth.js');
 
-router.post('/share/:folderId', sessionAuth, controller.shareFolder);
-router.get('/:id', sessionAuth, controller.getSharedFolder);
+router.post('/:folderId', sessionAuth, controller.shareFolder);
+router.get('/:folderId', sessionAuth, controller.getSharedFolderById);
 
 module.exports = router;
