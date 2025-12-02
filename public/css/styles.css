@@ -1,0 +1,437 @@
+/* === Base Reset === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  color: #202124;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* === Layout === */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header.scrolled {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #202124;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  color: #5f6368;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #1a73e8;
+}
+
+.nav-links .logout-button {
+  color: #d93025;
+}
+
+.container {
+  max-width: 1200px;
+  height: calc(100vh - 7rem);
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h3 {
+  margin-top: 2rem;
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+/* === File & Folder Cards === */
+.card {
+  display: grid;
+  grid-template-columns: 1fr 2rem;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.file.card {
+  grid-template-columns: min-content 1fr 2rem;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  width: 100%;
+}
+
+.card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: #5f6368;
+  margin-bottom: 0.5rem;
+}
+
+.item-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #202124;
+  word-break: break-word;
+}
+
+.drag-hover,
+.folder.card.drag-hover {
+  background-color: #e0f7fa;
+  border: 2px dashed #00acc1;
+}
+
+/* === Menus === */
+.kebab-menu {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #202124;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.kebab-menu:hover {
+  background:hsl(0, 0%, 90%);
+}
+
+.context-menu, .move-ui {
+  list-style: none;
+  margin: 0;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  position: absolute;
+  z-index: 1000;
+}
+
+.context-menu li, .move-ui li {
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+
+.context-menu li:hover, .folder-label:hover {
+  background: #f0f0f0;
+  border-radius: 0.25rem;
+}
+
+/* === Folder Tree === */
+.folder-tree {
+  list-style: none;
+  padding-left: 1em;
+  border-radius: 0.5rem;
+}
+
+.folder-node {
+  margin: 0.5em 0;
+}
+
+.folder-label {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.folder-label.selected {
+  background-color: #007bff;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.excluded-folder {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.toggle-btn {
+  margin-right: 0.2rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  background: inherit;
+}
+
+.toggle-btn:hover {
+  background: #f0f0f0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.collapsed {
+  display: none;
+}
+
+.rename-input {
+  font: inherit;
+  padding: 0.2em 0.4em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* === Buttons === */
+.btncontainer {
+  display: grid;
+  grid-template-columns: repeat(2, min-content);
+  gap: 0.5rem;
+  align-items: center;
+  justify-items: center;
+  padding: 0rem 1rem;
+}
+
+.button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #1765c1;
+}
+
+/* === Upload Form === */
+.upload-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.upload-form input[type="file"] {
+  border: 1px solid #dadce0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.folder-tree-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 0.5em;
+  margin-bottom: 1em;
+}
+
+/* === Modal === */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+#shareLink {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  background: #f9f9f9;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.modal-actions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #007bff;
+  color: #fff;
+}
+
+.modal-actions button:last-child {
+  background: #e0e0e0;
+  color: #333;
+}
+
+/* === Breadcrumbs === */
+.breadcrumbs {
+  font-size: 0.85rem;
+  color: #5f6368;
+  margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+  color: #1a73e8;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+/* === Floating Action Button === */
+.fab-container {
+  position: fixed;
+  bottom: 6rem;
+  right: 3rem;
+  z-index: 100;
+}
+
+.fab-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.fab-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.fab-container.active .fab-menu {
+  display: flex;
+}
+
+.fab-menu a {
+  display: block;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #333;
+  background: hsl(0, 0%, 90%);
+  border-radius: 4px;
+}
+
+.fab-menu a:hover, .fab-menu form:hover {
+  background-color: hsl(0, 0%, 80%);
+}
+
+/* === Footer === */
+.footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  color: #5f6368;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* === Modal / Viewer === */
+.viewer {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 6px;
+  max-height: 80vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .upload-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
