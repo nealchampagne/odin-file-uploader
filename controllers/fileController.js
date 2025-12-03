@@ -33,10 +33,9 @@ const downloadFile = async (req, res) => {
   if (!file) return res.status(404).json({ error: 'File not found' });
 
   try {
-    const relativePath = file.url.replace(/^\/+/, ''); // Remove leading slashes
     const { data, error } = await supabase.storage
       .from('files')
-      .download(relativePath);
+      .download(file.path);
 
     if (error || !data) {
       console.error('Supabase download error:', error);
@@ -84,7 +83,8 @@ const uploadFile = async (req, res) => {
         ownerId,
         size: uploaded.size,
         mimeType: uploaded.mimetype,
-        url: `/uploads/${uploaded.filename}`,
+        path: data.path, 
+        url: publicURL,
       },
     });
 
