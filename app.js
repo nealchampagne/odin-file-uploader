@@ -6,14 +6,9 @@ const prisma = require('./lib/prisma.js');
 const supabase = require('./lib/supabase.js');
 const passport = require('passport');
 require('./auth.js');
-const fs = require('node:fs');
 const path = require('node:path');
 const PORT = process.env.PORT || 3000;
 const flash = require('connect-flash');
-
-// Ensure CA cert is available for secure DB connections
-const caCertPath = path.join(__dirname, 'temp-ca.pem');
-fs.writeFileSync(caCertPath, process.env.CA_CERT);
 
 const app = express();
 app.use(express.json());
