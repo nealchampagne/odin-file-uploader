@@ -15,7 +15,8 @@
       <li><strong>Uploaded:</strong> <%= file.createdAt.toLocaleString() %></li>
       <li><strong>Owner:</strong> <%= file.user.email %></li>
       <li><strong>Folder:</strong> <a href="/folders/<%= file.folderId %>"><%= file.folder.name %></a></li>
-      <li><strong>Download:</strong> <a href="<%= file.url %>" target="_blank">Open file</a></li>
+      <li><strong><a href="<%= file.url %>" target="_blank">View File</a></strong></li>
+      <li><strong><a href="/files/<%= file.id %>/download">Download</a></strong></li>
     </ul>
     <a href="/folders/<%= file.folderId %>" class="btn">← Back to Folder</a>
   </div>
