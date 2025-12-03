@@ -73,9 +73,13 @@ const uploadFile = async (req, res) => {
       });
     if (error) throw error;
 
-    const { publicURL } = supabase.storage
+    const { data: publicURLData, error: publicURLError } = supabase.storage
       .from('files')
       .getPublicUrl(`user/${ownerId}/${safeName}`);
+
+    if (publicURLError) throw publicURLError;
+
+    const publicURL = publicURLData.publicUrl;
 
     // Save metadata in Postgres
     await prisma.file.create({
