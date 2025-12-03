@@ -64,6 +64,8 @@ const uploadFile = async (req, res) => {
 
     const finalName = await getUniqueFileName(folderId, ownerId, uploaded.originalname);
 
+    const safeName = encodeURIComponent(finalName);
+
     const { data, error } = await supabase.storage
       .from('files') // Bucket name
       .upload(`user/${ownerId}/${finalName}`, uploaded.buffer, {
@@ -73,7 +75,7 @@ const uploadFile = async (req, res) => {
 
     const { publicURL } = supabase.storage
       .from('files')
-      .getPublicUrl(`user/${ownerId}/${finalName}`);
+      .getPublicUrl(`user/${ownerId}/${safeName}`);
 
     // Save metadata in Postgres
     await prisma.file.create({
