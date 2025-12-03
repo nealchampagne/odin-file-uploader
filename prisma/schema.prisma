@@ -46,6 +46,7 @@ model File {
   name      String
   size      Int
   mimeType  String
+  path      String
   url       String
   folderId  String
   ownerId   String
