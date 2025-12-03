@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/nealchampagne/odin-file-uploader#readme",
   "dependencies": {
-    "@prisma/adapter-pg": "7.0.1",
-    "@prisma/client": "7.0.1",
+    "@prisma/adapter-pg": "^7.0.1",
+    "@prisma/client": "^7.1.0",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@supabase/supabase-js": "^2.86.0",
     "bcrypt": "^6.0.0",
@@ -39,6 +39,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
-    "prisma": "7.0.1"
+    "prisma": "^7.1.0"
   }
 }
